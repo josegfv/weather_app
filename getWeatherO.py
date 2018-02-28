@@ -61,14 +61,19 @@ def get_forecast(querys, cnt=3):
 
     if myforecast['cod'] == '200':
 
+        print("*"*95)
+
         for fsct in myforecast['list']:
+            logging.debug(fsct)
             fd = datetime.datetime.fromtimestamp(fsct['dt']).strftime('%Y-%m-%d %H:%M')
             temp = float(fsct['main']['temp'])
             temp_min = float(fsct['main']['temp_min'])
             temp_max = float(fsct['main']['temp_max'])
-            print('Forecast: {}:, Temp: {: 2.2f} C, Min: {: 2.2f} C, Max: {: 2.3f} C'.format(fd,
-                                                                    temp, temp_min, temp_max))
-    else:
+            cond = fsct['weather'][0]['description']
+            
+            print('Forecast: {}:, Temp: {: 2.2f} C, Min: {: 2.2f} C, Max: {: 2.3f} C; Conditions: {}'.format(fd,
+                                                                    temp, temp_min, temp_max, cond))
+        print("*"*95)
         logging.error('Request error {:s} returned from Server'.format(myforecast['cod']))
 
 def print_weather(wea, sel='current'):

@@ -21,7 +21,7 @@ except ImportError:
 
 
 def main():
-    singleValues = []
+    singleValues = {}
     column = 0
     lc = ""
     # Collects the arguments passed to the script from command line
@@ -48,10 +48,13 @@ def main():
                 #Assigns the value in the specified column position to a variable
                 lc = row[column]
                 #print(row)
-                if not singleValues.count(lc):
-                    singleValues.append(lc)
+                if not lc in singleValues:
+                    singleValues[lc] = 1
                     writer.writerow(row)
                     #print("Line added for city: {}".format(lc.encode('utf-8')))
+                else:
+                    singleValues[lc]+=1
+        print(singleValues["Brundidge"])
 
     fsrc.close()
     fdst.close()

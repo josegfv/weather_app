@@ -61,8 +61,8 @@ def getWeather(querystring):
 
 
 def main():
-    HOME = {"lat":"45.480270","lng":"-73.793137"}
-    OFFICE = {"lat":"45.4879006","lng":"-73.7364181"}
+    HOME = {"lat":"45.4333","lng":"-73.75"} #Pointe-Claire
+    OFFICE = {"lat":"45.5","lng":"-73.5833"} #Montreal
 
     op = ""
     #Select home or office weather
@@ -73,12 +73,16 @@ def main():
         print("Please only use valid city names")
         raise SystemExit
 
-    city = fc(op)
-    lat = city.get_lat()
-    lng = city.get_lng()
-    if lat != '':
-        querystring = {"lat":lat, "lng":lng}
-        getWeather(querystring)
+    if op != '':
+        city = fc(op)
+        lat = city.get_lat()
+        lng = city.get_lng()
+        if lat != '':
+            querystring = {"lat":lat, "lng":lng}
+            getWeather(querystring)
+        else:
+            querystring = OFFICE
+            getWeather(querystring)
     else:
         querystring = HOME
         getWeather(querystring)

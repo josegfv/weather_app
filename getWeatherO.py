@@ -142,7 +142,11 @@ def main():
         raise SystemExit
     if entry == '':
         entry = 'Montreal,CA'
-    city, cc = entry.split(',')
+    try:
+        city, cc = entry.split(',')
+    except ValueError:
+        print("Please use the requested format <city>,<country code>")
+        raise SystemExit
 
     cityId = CityId(city, cc)
     logging.debug(cityId.get_Id())

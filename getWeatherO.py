@@ -74,6 +74,7 @@ def get_forecast(querys, cnt=3):
             print('Forecast: {}:, Temp: {: 2.2f} C, Min: {: 2.2f} C, Max: {: 2.3f} C; Conditions: {}'.format(fd,
                                                                     temp, temp_min, temp_max, cond))
         print("*"*95)
+    else:
         logging.error('Request error {:s} returned from Server'.format(myforecast['cod']))
 
 def print_weather(wea, sel='current'):

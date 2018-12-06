@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 """
 getWeatherO.py: Gets weather from OpenWeatherMap.org for the specified city,country code
 
@@ -24,7 +24,7 @@ Sample response:
 import json, datetime, logging, requests
 from getCityId import CityId
 
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_weather(querystring):
     """ This subroutine gets the current weather information """
@@ -74,8 +74,7 @@ def get_forecast(querys, cnt=3):
             print('Forecast: {}:, Temp: {: 2.2f} C, Min: {: 2.2f} C, Max: {: 2.3f} C; Conditions: {}'.format(fd,
                                                                     temp, temp_min, temp_max, cond))
         print("*"*95)
-    else:
-        logging.error('Request error {:s} returned from Server'.format(myforecast['cod']))
+        logging.info('Request result {:s} returned from Server'.format(myforecast['cod']))
 
 def print_weather(wea, sel='current'):
     """ print_weather: prints the result from collecting the current weather info."""
@@ -149,9 +148,16 @@ def main():
         print("Please use the requested format <city>,<country code>")
         raise SystemExit
 
-    cityId = CityId(city, cc)
-    logging.debug(cityId.get_Id())
-    querystring = '?id=' + str(cityId.get_Id())
+    source = "API"
+    #source = "file"
+    cityId = CityId(city, cc, source)
+    if source != "API":
+        logging.debug(cityId.get_Id())
+        querystring = '?id=' + str(cityId.get_Id())
+    else:
+        logging.debug(cityId.get_Coord())
+        coord = cityId.get_Coord()
+        querystring = '?lat=' + str(coord['lat']) +'&lon='+str(coord['lon'])
     get_weather(querystring)
     get_forecast(querystring, cnt=6)
 

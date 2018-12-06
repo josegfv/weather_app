@@ -11,7 +11,7 @@ class findCity:
         self.lat = ''
         self.lng = ''
 
-        with open('./GeoLiteCity-Location.csv', 'r', encoding='utf-8') as f:
+        with open('./GeoLiteCity-Location-short.csv', 'r', encoding='utf-8') as f:
             reader = csv.reader(f)
             for row in reader:
                 lc = row[3].upper()

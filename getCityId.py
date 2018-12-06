@@ -30,8 +30,8 @@ class CityId:
 
             response = requests.get("https://devru-latitude-longitude-find-v1.p.rapidapi.com/latlon.php?location="+name+"%2C"+county_code, headers=headers)
 
-            if response.status_code == 200:
-                #print(response.headers['Server'])
+            if ((response.status_code == 200) & (int(response.headers['Content-Length']) > 33)):
+                logging.debug(response.headers)
                 s = json.loads(response.content)
                 logging.debug(s['Results'][0]['lat']) 
                 self.cityInfo['name'] = s['Results'][0]['name']
@@ -39,7 +39,7 @@ class CityId:
                 self.cityInfo['coord']['lon'] = s['Results'][0]['lon']
                 self.cityInfo['coord']['lat'] = s['Results'][0]['lat']
             else:
-                logging.error("City was not Found")
+                logging.error("City was not Found - status {}".format(response.status_code))
                 raise SystemExit
         else:
             with open('city.list.json' , "rb") as f:

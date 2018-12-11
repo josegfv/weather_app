@@ -21,10 +21,15 @@ Sample response:
 }
 """
 
-import json, datetime, logging, requests
+import json
+import datetime
+import logging
+import requests
 from getCityId import CityId
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def get_weather(querystring):
     """ This subroutine gets the current weather information """
@@ -42,9 +47,11 @@ def get_weather(querystring):
     if myweather['cod'] == 200:
         print_weather(myweather)
     else:
-        logging.error('Request error {:3d} returned from Server'.format(myweather['cod']))
+        logging.error(
+            'Request error {:3d} returned from Server'.format(myweather['cod']))
 
-    #print(myweather)
+    # print(myweather)
+
 
 def get_forecast(querys, cnt=3):
     """ get_forecst: request the forecast endpoint that provides the weather forecast data """
@@ -52,7 +59,8 @@ def get_forecast(querys, cnt=3):
     myforecast = {}
     app_id = 'ed5b73b01e768e371f9a3dc6b2fbb452'
 
-    req = url + querys + '&units=metric' + '&APPID=' + app_id + '&cnt=' + str(cnt)
+    req = url + querys + '&units=metric' + \
+        '&APPID=' + app_id + '&cnt=' + str(cnt)
     response = requests.get(req)
 
     myforecast = json.loads(response.text)
@@ -65,16 +73,19 @@ def get_forecast(querys, cnt=3):
 
         for fsct in myforecast['list']:
             logging.debug(fsct)
-            fd = datetime.datetime.fromtimestamp(fsct['dt']).strftime('%Y-%m-%d %H:%M')
+            fd = datetime.datetime.fromtimestamp(
+                fsct['dt']).strftime('%Y-%m-%d %H:%M')
             temp = float(fsct['main']['temp'])
             temp_min = float(fsct['main']['temp_min'])
             temp_max = float(fsct['main']['temp_max'])
             cond = fsct['weather'][0]['description']
-            
+
             print('Forecast: {}:, Temp: {: 2.2f} C, Min: {: 2.2f} C, Max: {: 2.3f} C; Conditions: {}'.format(fd,
-                                                                    temp, temp_min, temp_max, cond))
+                                                                                                             temp, temp_min, temp_max, cond))
         print("*"*95)
-        logging.info('Request result {:s} returned from Server'.format(myforecast['cod']))
+        logging.info(
+            'Request result {:s} returned from Server'.format(myforecast['cod']))
+
 
 def print_weather(wea, sel='current'):
     """ print_weather: prints the result from collecting the current weather info."""
@@ -92,7 +103,10 @@ def print_weather(wea, sel='current'):
             wind_gust = 0.0
         presIn = wea['main']['pressure']
 
-        wd = int(wea['wind']['deg'])
+        try:
+            wd = int(wea['wind']['deg'])
+        except KeyError:
+            wd = 0
 
         if wd == 0:
             wdt = "North"
@@ -111,29 +125,29 @@ def print_weather(wea, sel='current'):
         else:
             wdt = "North-West"
 
-
         print("="*65)
         print("*\n*  Weather for {} provided by OpenWeatherMap.org".format(Title))
         print("*  Temperature is {}C with a min of {}C, and a max of {}C".format(temperature,
-                                                                    temp_min, temp_max)) 
+                                                                                 temp_min, temp_max))
         print("*  Conditions: {} ".format(wea['weather'][0]['description']))
         if wind_gust != 0.0:
-            print("*  Winds of {:2.2f} km/h, in direction {}, gusting at {:2.2f} km/h".format(wspd, 
-                                                                    wdt, wind_gust))
+            print("*  Winds of {:2.2f} km/h, in direction {}, gusting at {:2.2f} km/h".format(wspd,
+                                                                                              wdt, wind_gust))
         else:
-            print("*  Winds of {:2.2f} km/h, in direction {}.".format(wspd, wdt))
+            print(
+                "*  Winds of {:2.2f} km/h, in direction {}.".format(wspd, wdt))
         print("*  Humidity is {}%, with atmospheric pressure of {} hPa\n*".format(humid, presIn))
         print("="*65)
     elif type == 'forecast':
         logging.debug('Entering the Forecast section')
     else:
-        logging.error("The type should be either current or forecast, we should not be here")
-
+        logging.error(
+            "The type should be either current or forecast, we should not be here")
 
 
 def main():
     """ This is the main routine. """
-    #Select home or office weather
+    # Select home or office weather
     try:
         #op = int(input("Please select (1) for HOME or (2) for OFFICE ?"))
         entry = input("Enter name of City,Country (ex. Montreal,Canada): ")
@@ -157,10 +171,9 @@ def main():
     else:
         logging.debug(cityId.get_Coord())
         coord = cityId.get_Coord()
-        querystring = '?lat=' + str(coord['lat']) +'&lon='+str(coord['lon'])
+        querystring = '?lat=' + str(coord['lat']) + '&lon='+str(coord['lon'])
     get_weather(querystring)
     get_forecast(querystring, cnt=6)
-
 
 
 if __name__ == '__main__':
